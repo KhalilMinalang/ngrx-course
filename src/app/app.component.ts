@@ -11,6 +11,7 @@ import {
 } from "@angular/router";
 import { AppState } from "./reducers";
 import { Logout } from "./auth/auth.actions";
+import { isLoggedIn, isLoggedOut } from "./auth/auth.selectors";
 
 @Component({
   selector: "app-root",
@@ -27,8 +28,8 @@ export class AppComponent implements OnInit {
   constructor(private router: Router, private store: Store<AppState>) {}
 
   ngOnInit() {
-    this.isLoggedIn$ = this.store.pipe(map((state) => state.auth.loggedIn));
-    this.isLoggedOut$ = this.store.pipe(map((state) => !state.auth.loggedIn));
+    this.isLoggedIn$ = this.store.pipe(select(isLoggedIn));
+    this.isLoggedOut$ = this.store.pipe(select(isLoggedOut));
 
     this.router.events.subscribe((event) => {
       switch (true) {
