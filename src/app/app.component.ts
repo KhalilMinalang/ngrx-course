@@ -1,7 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 import { select, Store } from "@ngrx/store";
 import { Observable } from "rxjs";
-import { map } from "rxjs/operators";
+import { map, tap } from "rxjs/operators";
 import {
   NavigationCancel,
   NavigationEnd,
@@ -18,11 +18,18 @@ import { Logout } from "./auth/auth.actions";
   styleUrls: ["./app.component.css"],
 })
 export class AppComponent implements OnInit {
+  isLoggedIn$: Observable<boolean>;
+
+  isLoggedOut$: Observable<boolean>;
+
   loading = true;
 
   constructor(private router: Router, private store: Store<AppState>) {}
 
   ngOnInit() {
+    this.isLoggedIn$ = this.store.pipe(map((state) => state.auth.loggedIn));
+    this.isLoggedOut$ = this.store.pipe(map((state) => !state.auth.loggedIn));
+
     this.router.events.subscribe((event) => {
       switch (true) {
         case event instanceof NavigationStart: {
